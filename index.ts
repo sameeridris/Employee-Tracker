@@ -41,10 +41,10 @@ inquirer
         });
       
  
-      // Function to view all departments (Acceptance Criteria)
+      // Function to view all departments
       function viewAllDepartments() {
         console.log("Displaying all departments...");
-        const sql = `SELECT * FROM departments`;
+        const sql = `SELECT * FROM department`;
 
         pool.query(sql, (err: Error, result: any) => {
           if (err) {
@@ -57,16 +57,35 @@ inquirer
         
       };
       
-      // Function to view all roles (Acceptance Criteria)
+      // Function to view all roles
       function viewAllRoles() {
         console.log("Displaying all roles...");
-        // Logic to fetch and display roles with job titles, role IDs, departments, and salaries
+        const sql = 'SELECT * FROM role'
+
+        pool.query(sql, (err: Error, result: any) => {
+          if (err) {
+            console.log(err)
+            return;
+          }
+          const { rows } = result;
+          console.table(rows);
+        });
       }
       
-      // Function to view all employees (Acceptance Criteria)
+      // Function to view all employees
       function viewAllEmployees() {
         console.log("Displaying all employees...");
-        // Logic to fetch and display employees with all relevant info, including manager data
+        
+        const sql = 'SELECT * FROM employee'
+
+        pool.query(sql, (err: Error, result: any) => {
+          if (err) {
+            console.log(err)
+            return;
+          }
+          const { rows } = result;
+          console.table(rows);
+        });
       }
       
       // Function to add a new department (Acceptance Criteria)
