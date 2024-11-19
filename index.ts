@@ -1,4 +1,7 @@
 import inquirer from 'inquirer';
+import { pool, connectToDb } from './db/connection.js';
+
+await connectToDb();
 
 inquirer
     .prompt([
@@ -41,8 +44,18 @@ inquirer
       // Function to view all departments (Acceptance Criteria)
       function viewAllDepartments() {
         console.log("Displaying all departments...");
-        // Logic to fetch and display departments with their IDs from the database goes here
-      }
+        const sql = `SELECT * FROM departments`;
+
+        pool.query(sql, (err: Error, result: any) => {
+          if (err) {
+            console.log(err)
+            return;
+          }
+          const { rows } = result;
+          console.table(rows);
+        });
+        
+      };
       
       // Function to view all roles (Acceptance Criteria)
       function viewAllRoles() {
