@@ -1,46 +1,49 @@
 import inquirer from 'inquirer';
 import { pool, connectToDb } from './db/connection.js';
 await connectToDb();
-inquirer
-    .prompt([
-    {
-        name: 'departments',
-        type: 'list',
-        message: 'What would you like to do?',
-        choices: ["View all departments", "View all roles", "View all employees", "Add a department", "Add a role", "Add an employee", "Update an employee role"],
-    },
-])
-    .then((response) => {
-    switch (response.departments) {
-        case "View all departments":
-            viewAllDepartments();
-            break;
-        case "View all roles":
-            viewAllRoles();
-            break;
-        case "View all employees":
-            viewAllEmployees();
-            break;
-        case "Add a department":
-            addDepartment();
-            break;
-        case "Add a role":
-            addRole();
-            break;
-        case "Add an employee":
-            addEmployee();
-            break;
-        case "Update an employee role":
-            updateEmployeeRole();
-            break;
-        default:
-            console.log("Invalid option");
-    }
-});
-// Function to view all departments (Acceptance Criteria)
+function menu() {
+    inquirer
+        .prompt([
+        {
+            name: 'departments',
+            type: 'list',
+            message: 'What would you like to do?',
+            choices: ["View all departments", "View all roles", "View all employees", "Add a department", "Add a role", "Add an employee", "Update an employee role"],
+        },
+    ])
+        .then((response) => {
+        switch (response.departments) {
+            case "View all departments":
+                viewAllDepartments();
+                break;
+            case "View all roles":
+                viewAllRoles();
+                break;
+            case "View all employees":
+                viewAllEmployees();
+                break;
+            case "Add a department":
+                addDepartment();
+                break;
+            case "Add a role":
+                addRole();
+                break;
+            case "Add an employee":
+                addEmployee();
+                break;
+            case "Update an employee role":
+                updateEmployeeRole();
+                break;
+            default:
+                console.log("Invalid option");
+        }
+    });
+}
+;
+// Function to view all departments
 function viewAllDepartments() {
     console.log("Displaying all departments...");
-    const sql = `SELECT * FROM departments`;
+    const sql = `SELECT * FROM department`;
     pool.query(sql, (err, result) => {
         if (err) {
             console.log(err);
@@ -48,20 +51,39 @@ function viewAllDepartments() {
         }
         const { rows } = result;
         console.table(rows);
+        menu();
     });
 }
 ;
-// Function to view all roles (Acceptance Criteria)
+// Function to view all roles
 function viewAllRoles() {
     console.log("Displaying all roles...");
-    // Logic to fetch and display roles with job titles, role IDs, departments, and salaries
+    const sql = 'SELECT * FROM role';
+    pool.query(sql, (err, result) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        const { rows } = result;
+        console.table(rows);
+        menu();
+    });
 }
-// Function to view all employees (Acceptance Criteria)
+// Function to view all employees
 function viewAllEmployees() {
     console.log("Displaying all employees...");
-    // Logic to fetch and display employees with all relevant info, including manager data
+    const sql = 'SELECT * FROM employee';
+    pool.query(sql, (err, result) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        const { rows } = result;
+        console.table(rows);
+        menu();
+    });
 }
-// Function to add a new department (Acceptance Criteria)
+// Function to add a new department 
 function addDepartment() {
     inquirer.prompt([
         {
@@ -72,9 +94,18 @@ function addDepartment() {
     ]).then((answers) => {
         console.log(`Adding department: ${answers.departmentName}`);
         // Logic to insert the new department into the database
+        const sql = 'INSERT INTO department (name) VALUES ($1)';
+        pool.query(sql, [answers.departmentName], (err, _result) => {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log(`${answers.departmentName} has been added!`);
+            menu();
+        });
     });
 }
-// Function to add a new role (Acceptance Criteria)
+// Function to add a new role
 function addRole() {
     inquirer.prompt([
         {
@@ -97,7 +128,7 @@ function addRole() {
         // Logic to insert the new role into the database
     });
 }
-// Function to add a new employee (Acceptance Criteria)
+// Function to add a new employee 
 function addEmployee() {
     inquirer.prompt([
         {
@@ -125,7 +156,7 @@ function addEmployee() {
         // Logic to insert the new employee into the database
     });
 }
-// Function to update an employee's role (Acceptance Criteria)
+// Function to update an employee's role 
 function updateEmployeeRole() {
     inquirer.prompt([
         {
@@ -143,3 +174,4 @@ function updateEmployeeRole() {
         // Logic to update the employee's role in the database
     });
 }
+menu();
