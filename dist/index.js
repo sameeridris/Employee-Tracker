@@ -126,6 +126,15 @@ function addRole() {
     ]).then((answers) => {
         console.log(`Adding role: ${answers.roleTitle} with salary ${answers.roleSalary} in department ID ${answers.departmentId}`);
         // Logic to insert the new role into the database
+        const sql = 'INSERT INTO role (title, salary, department_id) VALUES ($1, $2, $3)';
+        pool.query(sql, [answers.roleTitle, answers.roleSalary, answers.departmentId], (err, _result) => {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log(`${answers.roleTitle}, ${answers.roleSalary}, & ${answers.departmentId} has been added!`);
+            menu();
+        });
     });
 }
 // Function to add a new employee 
@@ -154,6 +163,15 @@ function addEmployee() {
     ]).then((answers) => {
         console.log(`Adding employee: ${answers.firstName} ${answers.lastName}, Role ID: ${answers.roleId}, Manager ID: ${answers.managerId || 'None'}`);
         // Logic to insert the new employee into the database
+        const sql = 'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)';
+        pool.query(sql, [answers.firstName, answers.lastName, answers.roleId, answers.managerId === "" ? null : answers.managerId], (err, _result) => {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log(`${answers.firstName}, ${answers.lastName}, ${answers.roleId}, & ${answers.managerId},  has been added!`);
+            menu();
+        });
     });
 }
 // Function to update an employee's role 
