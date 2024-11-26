@@ -209,6 +209,17 @@ function updateEmployeeRole() {
   ]).then((answers) => {
     console.log(`Updating employee ID ${answers.employeeId} with new role ID ${answers.newRoleId}`);
     // Logic to update the employee's role in the database
+
+    const sql = 'UPDATE employee SET role_id = $1 WHERE id = $2'
+
+    pool.query(sql, [answers.newRoleId, answers.employeeId],(err: Error, _result: any) => {
+      if (err) {
+        console.log(err)
+        return;
+      }
+      console.log(`Employee has been updated!`);
+      menu();
+    });
   });
 }
 menu();
